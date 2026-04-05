@@ -1,0 +1,71 @@
+"use client";
+
+import { motion } from "framer-motion";
+
+const experiences = [
+  {
+    role: "Java Fullstack Developer Trainee",
+    company: "Qspiders,Kochi",
+    period: "2025 - 2026",
+    description: [
+      "Trained in Core Java, OOP concepts.",
+      "Hands-on practice in SQL, JDBC.",
+      "Developed responsive web applications using HTML, CSS, and JavaScript.",
+      "Built mini-projects using Java and database integration.",
+      "Familiar with MVC architecture and backend integration."
+    ]
+  },
+
+];
+
+export default function Experience() {
+  return (
+    <section id="experience" className="relative z-20 py-24 px-8 md:px-24 bg-zinc-950">
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mb-16"
+        >
+          <span className="text-sm font-mono uppercase tracking-[0.3em] text-blue-500">Career Path</span>
+          <h2 className="mt-4 text-4xl md:text-6xl font-bold text-white tracking-tight">
+            Training / Experience
+          </h2>
+        </motion.div>
+
+        <div className="relative border-l border-zinc-800 pl-8 ml-4 md:ml-0">
+          {experiences.map((exp, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2, duration: 0.6 }}
+              className="mb-16 relative"
+            >
+              {/* Timeline Node */}
+              <div className="absolute -left-[41px] top-1 h-5 w-5 rounded-full bg-zinc-950 border-2 border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+
+              <div className="glass-card p-8 bg-gradient-to-br from-white/[0.02] to-transparent group hover:bg-white/[0.05] transition-colors duration-500 rounded-2xl">
+                <span className="text-sm font-mono tracking-widest text-blue-400 mb-2 block">{exp.period}</span>
+                <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-blue-300 transition-colors">{exp.role}</h3>
+                <h4 className="text-lg text-zinc-400 mb-4">{exp.company}</h4>
+                <ul className="text-zinc-400 leading-relaxed max-w-2xl space-y-2 list-inside list-disc marker:text-blue-500">
+                  {Array.isArray(exp.description) ? (
+                    exp.description.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))
+                  ) : (
+                    <p>{exp.description}</p>
+                  )}
+                </ul>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
