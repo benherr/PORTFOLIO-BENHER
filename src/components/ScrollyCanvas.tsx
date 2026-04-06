@@ -71,16 +71,24 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
-  // Sync canvas with smoothFrameIndex
+  // Sync canvas with smoothFrameIndex via requestAnimationFrame for performance
   useEffect(() => {
+    let animationFrameId: number;
+
     const unsubscribe = smoothFrameIndex.on("change", (latest) => {
-      drawFrame(latest);
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        drawFrame(latest);
+      });
     });
 
     // Initial draw
     if (images.length > 0) drawFrame(0);
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
   }, [images, smoothFrameIndex]);
 
   // Handle Resize
@@ -100,14 +108,14 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
   }, [images]);
 
   return (
-    <div ref={containerRef} className="relative h-[500vh] w-full bg-zinc-950">
+    <div ref={containerRef} className="relative h-[500vh] w-full bg-zinc-50 dark:bg-zinc-950 transition-colors duration-500">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <canvas
           ref={canvasRef}
-          className="block h-full w-full object-cover grayscale opacity-60"
+          className="block h-full w-full object-cover dark:grayscale opacity-100 dark:opacity-60 transition-opacity duration-500 will-change-contents [transform:translateZ(0)]"
         />
         {/* Subtle vignette overlay */}
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.05)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)] transition-colors duration-500" />
       </div>
     </div>
   );

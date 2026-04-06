@@ -58,21 +58,21 @@ export default function LoadingScreen({ onComplete, frameCount }: LoadingScreenP
         >
           PRELOADING EXPERIENCE
         </motion.div>
-        
+
         <div className="h-[1px] w-64 bg-zinc-800">
           <motion.div
             className="h-full bg-blue-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-        
+
         <div className="mt-4 font-mono text-sm text-zinc-500">
           {progress}%
         </div>
       </div>
-      
+
       <div className="absolute bottom-12 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-        High Performance Creative Development
+        Thanks for visiting
       </div>
     </motion.div>
   );
