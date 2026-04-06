@@ -56,7 +56,7 @@ export default function LoadingScreen({ onComplete, frameCount }: LoadingScreenP
           transition={{ duration: 1, ease: "easeOut" }}
           className="mb-8 font-mono text-xl tracking-tighter"
         >
-          PRELOADING EXPERIENCE
+          HEY Waassupp! 
         </motion.div>
 
         <div className="h-[1px] w-64 bg-zinc-800">
@@ -72,7 +72,7 @@ export default function LoadingScreen({ onComplete, frameCount }: LoadingScreenP
       </div>
 
       <div className="absolute bottom-12 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-        Thanks for visiting
+        ;)
       </div>
     </motion.div>
   );
