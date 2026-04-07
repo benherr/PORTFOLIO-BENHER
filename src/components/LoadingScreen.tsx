@@ -72,7 +72,7 @@ export default function LoadingScreen({ onComplete, frameCount }: LoadingScreenP
       </div>
 
       <div className="absolute bottom-12 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-        ;)
+        Developed by Benher Basheer;)
       </div>
     </motion.div>
   );
