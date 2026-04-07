@@ -15,7 +15,7 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const frameCount = 55; // 55 files found in sequence/
+  const frameCount = 47; // Cut 8 frames total for final flow
 
   return (
     <main className="relative bg-zinc-50 dark:bg-zinc-950 min-h-screen transition-colors duration-500">

@@ -44,14 +44,31 @@ const projects = [
 function ProjectImageSlider({ images }: { images: string[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setCurrentIndex((prev) => (prev + 1) % images.length);
+  const paginate = (newDirection: number) => {
+    if (newDirection > 0) {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    } else {
+      setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    }
   };
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    paginate(1);
+  };
+
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    paginate(-1);
+  };
+
+  const handleDragEnd = (e: any, { offset, velocity }: any) => {
+    const swipe = offset.x;
+    if (swipe < -50) {
+      paginate(1);
+    } else if (swipe > 50) {
+      paginate(-1);
+    }
   };
 
   return (
@@ -60,10 +77,14 @@ function ProjectImageSlider({ images }: { images: string[] }) {
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="absolute inset-0 bg-cover bg-top transition-transform duration-700 group-hover:scale-105"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragEnd={handleDragEnd}
+          className="absolute inset-0 bg-cover bg-top transition-transform duration-700 group-hover:scale-105 cursor-grab active:cursor-grabbing"
           style={{ backgroundImage: `url(${images[currentIndex]})` }}
         />
       </AnimatePresence>

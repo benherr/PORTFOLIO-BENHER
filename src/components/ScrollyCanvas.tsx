@@ -18,15 +18,8 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
     offset: ["start start", "end end"],
   });
 
-  // Map scroll progress (0-1) to frame index (0-54)
+  // Map scroll progress (0-1) to frame index (0-51)
   const frameIndex = useTransform(scrollYProgress, [0, 1], [0, frameCount - 1]);
-  
-  // Use a spring transition for buttery smooth scrubbing
-  const smoothFrameIndex = useSpring(frameIndex, {
-    stiffness: 400,
-    damping: 30,
-    restDelta: 0.001
-  });
 
   // Pre-generate image instances (already cached by LoadingScreen)
   useEffect(() => {
@@ -71,11 +64,11 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
-  // Sync canvas with smoothFrameIndex via requestAnimationFrame for performance
+  // Sync canvas with frameIndex via requestAnimationFrame for performance
   useEffect(() => {
     let animationFrameId: number;
 
-    const unsubscribe = smoothFrameIndex.on("change", (latest) => {
+    const unsubscribe = frameIndex.on("change", (latest) => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
       animationFrameId = requestAnimationFrame(() => {
         drawFrame(latest);
@@ -89,7 +82,7 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
       unsubscribe();
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [images, smoothFrameIndex]);
+  }, [images, frameIndex]);
 
   // Handle Resize
   useEffect(() => {
@@ -97,7 +90,7 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
       if (canvasRef.current) {
         canvasRef.current.width = window.innerWidth;
         canvasRef.current.height = window.innerHeight;
-        drawFrame(smoothFrameIndex.get());
+        drawFrame(frameIndex.get());
       }
     };
 
