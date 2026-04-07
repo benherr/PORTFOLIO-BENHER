@@ -42,26 +42,37 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
     const img = images[Math.floor(index)];
     if (!img) return;
 
-    // Calculate dimensions for object-fit: cover
-    const canvasAspect = canvas.width / canvas.height;
-    const imgAspect = img.width / img.height;
+    const executeDraw = () => {
+      // It's possible the canvas was unmounted before the image loaded
+      if (!canvas) return;
+      
+      // Calculate dimensions for object-fit: cover
+      const canvasAspect = canvas.width / canvas.height;
+      const imgAspect = img.width / img.height;
 
-    let drawWidth, drawHeight, offsetX, offsetY;
+      let drawWidth, drawHeight, offsetX, offsetY;
 
-    if (canvasAspect > imgAspect) {
-      drawWidth = canvas.width;
-      drawHeight = canvas.width / imgAspect;
-      offsetX = 0;
-      offsetY = (canvas.height - drawHeight) / 2;
+      if (canvasAspect > imgAspect) {
+        drawWidth = canvas.width;
+        drawHeight = canvas.width / imgAspect;
+        offsetX = 0;
+        offsetY = (canvas.height - drawHeight) / 2;
+      } else {
+        drawWidth = canvas.height * imgAspect;
+        drawHeight = canvas.height;
+        offsetX = (canvas.width - drawWidth) / 2;
+        offsetY = 0;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    };
+
+    if (img.complete) {
+      executeDraw();
     } else {
-      drawWidth = canvas.height * imgAspect;
-      drawHeight = canvas.height;
-      offsetX = (canvas.width - drawWidth) / 2;
-      offsetY = 0;
+      img.onload = executeDraw;
     }
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
   // Sync canvas with frameIndex via requestAnimationFrame for performance
@@ -75,8 +86,8 @@ export default function ScrollyCanvas({ frameCount }: ScrollyCanvasProps) {
       });
     });
 
-    // Initial draw
-    if (images.length > 0) drawFrame(0);
+    // Initial draw syncing to current scroll position (fixes refresh black screen)
+    if (images.length > 0) drawFrame(frameIndex.get());
 
     return () => {
       unsubscribe();
